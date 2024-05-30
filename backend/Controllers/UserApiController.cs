@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-
+﻿using System.Collections;
+using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Web.Http;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using backend.DAL;
+using backend.Services;
 
 namespace backend.Controllers
 {
@@ -10,70 +13,96 @@ namespace backend.Controllers
     [ApiController]
     public class UserApiController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        public UserApiController(IUserRepository userRepository)
+        private readonly IUserService _userService;
+
+        private readonly IMapper _mapper;
+        public UserApiController(IUserService userService, IMapper mapper)
         {
-            _userRepository = userRepository;
+            _userService = userService;
+            _mapper = mapper;
         }
 
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [Microsoft.AspNetCore.Mvc.Route("GetAllUsers")]
         public async Task<ObjectResult> GetAllUsers()
         {
-            var result = await _userRepository.GetListByConditionAsync(e => e.Id != null);
-            if (result.IsSuccess)
+            try
             {
-                return Ok(result.Data);
+                var resultDto = await _userService.GetListByCondition(e => e.Id != null);
+                var result = _mapper.Map<IEnumerable<User>>(resultDto);
+                return Ok(result);
             }
-            return BadRequest(result.ErrorMessage);
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [Microsoft.AspNetCore.Mvc.Route("GetUser/{id:int}")]
         public async Task<ObjectResult> GetUser(int id)
         {
-            var result = await _userRepository.GetSingleByConditionAsync(e => e.Id == id);
-            if (result.IsSuccess)
+            try
             {
-                return Ok(result.Data);
+                var resultDto = await _userService.GetSingleByCondition(e => e.Id == id);
+                var result = _mapper.Map<User>(resultDto);
+
+                return Ok(result);
+
             }
-            return NotFound(result.ErrorMessage);
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+
         }
 
         [Microsoft.AspNetCore.Mvc.HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("CreateUser")]
         public async Task<ObjectResult> CreateUser(User user)
         {
-            var result = await _userRepository.AddAsync(user);
-            if (result.IsSuccess)
+            try
             {
+                var userDto = _mapper.Map<UserDto>(user);
+                await _userService.Add(userDto);
                 return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
             }
-            return BadRequest(result.ErrorMessage);
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [Microsoft.AspNetCore.Mvc.HttpPut]
         [Microsoft.AspNetCore.Mvc.Route("UpdateUser/{id:int}")]
         public async Task<ObjectResult> Put(int id, User user)
         {
-            var result = await _userRepository.UpdateAsync(user, e => e.Id == id);
-            if (result.IsSuccess)
+            try
             {
-                return Ok(result);
+                var userDto = _mapper.Map<UserDto>(user);
+                await _userService.Update(userDto, e => e.Id == id);
+                
+                return Ok(user);
             }
-            return BadRequest(result.ErrorMessage);
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [Microsoft.AspNetCore.Mvc.HttpDelete]
         [Microsoft.AspNetCore.Mvc.Route("DeleteUser/{id:int}")]
         public async Task<ObjectResult> Delete(int id)
         {
-            var result = await _userRepository.DeleteAsync(x => x.Id == id);
-            if (result.IsSuccess)
+            try
             {
-                return Ok(result.Data);
+                await _userService.Delete(e => e.Id == id);
+                return Ok(id);
             }
-            return BadRequest(result.ErrorMessage);
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

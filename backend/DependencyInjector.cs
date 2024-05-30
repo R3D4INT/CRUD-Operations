@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using backend.DAL;
+using backend.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend
@@ -8,6 +10,7 @@ namespace backend
         public static void RegisterRepositories(IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+            services.AddScoped(typeof(IUserService), typeof(UserService));
         }
     }
 }

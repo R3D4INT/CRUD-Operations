@@ -1,3 +1,6 @@
+using AutoMapper.Extensions.ExpressionMapping;
+using backend.DAL;
+using backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend
@@ -11,7 +14,15 @@ namespace backend
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddScoped<IUserService, UserService>();
+
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+            builder.Services.AddAutoMapper(cfg => {
+                cfg.AddExpressionMapping();
+                cfg.AddProfile<MappingProfile>(); 
+            }, typeof(Startup));
+
             builder.Services.AddDbContext<AppDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("HospitalDb")));
 

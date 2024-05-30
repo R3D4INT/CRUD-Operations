@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend
+namespace backend.DAL
 {
     public class AppDBContext : DbContext
     {
@@ -12,12 +12,8 @@ namespace backend
 
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {
+            Database.EnsureCreated();
         }
-
-        public AppDBContext()
-        {
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
