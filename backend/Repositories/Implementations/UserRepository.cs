@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using AutoMapper;
+using backend.DAL;
+using backend.Dtos.Request;
 using backend.Helpers;
 using backend.Models;
+using backend.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-
-namespace backend.DAL
+namespace backend.Repositories.Implementations
 {
     public class UserRepository : IUserRepository
     {
         private readonly AppDBContext _context;
         private readonly IMapper _mapper;
+
         public UserRepository(AppDBContext context, IMapper mapper)
         {
             _context = context;
@@ -38,29 +37,29 @@ namespace backend.DAL
             }
         }
 
-        public async Task<Result<IEnumerable<UserDto>>> GetListByConditionAsync(Expression<Func<UserDto, bool>> condition)
+        public async Task<Result<IEnumerable<UserRequest>>> GetListByConditionAsync(Expression<Func<UserRequest, bool>> condition)
         {
-            return await PerformOperationAsync<IEnumerable<UserDto>>(async () =>
+            return await PerformOperationAsync(async () =>
             {
                 var entityCondition = _mapper.Map<Expression<Func<User, bool>>>(condition);
                 var items = await _context.Set<User>().Where(entityCondition).ToListAsync();
-                return _mapper.Map<IEnumerable<UserDto>>(items);
+                return _mapper.Map<IEnumerable<UserRequest>>(items);
             }, RepositoryMessages.FailedGetListOfEntityMessage);
         }
 
-        public async Task<Result<UserDto>> GetSingleByConditionAsync(Expression<Func<UserDto, bool>> condition)
+        public async Task<Result<UserRequest>> GetSingleByConditionAsync(Expression<Func<UserRequest, bool>> condition)
         {
-            return await PerformOperationAsync<UserDto>(async () =>
+            return await PerformOperationAsync(async () =>
             {
                 var entityCondition = _mapper.Map<Expression<Func<User, bool>>>(condition);
                 var item = await _context.Set<User>().FirstOrDefaultAsync(entityCondition);
-                return _mapper.Map<UserDto>(item);
+                return _mapper.Map<UserRequest>(item);
             }, RepositoryMessages.FailedGetSingleItemMessage);
         }
 
-        public async Task<Result<UserDto>> AddAsync(UserDto item)
+        public async Task<Result<UserRequest>> AddAsync(UserRequest item)
         {
-            return await PerformOperationAsync<UserDto>(async () =>
+            return await PerformOperationAsync(async () =>
             {
                 var user = _mapper.Map<User>(item);
                 _context.Set<User>().Add(user);
@@ -69,9 +68,9 @@ namespace backend.DAL
             }, RepositoryMessages.FailedAddItemMessage);
         }
 
-        public async Task<Result<bool>> UpdateAsync(UserDto item, Expression<Func<UserDto, bool>> condition)
+        public async Task<Result<bool>> UpdateAsync(UserRequest item, Expression<Func<UserRequest, bool>> condition)
         {
-            return await PerformOperationAsync<bool>(async () =>
+            return await PerformOperationAsync(async () =>
             {
                 var entityCondition = _mapper.Map<Expression<Func<User, bool>>>(condition);
                 var itemToUpdate = await _context.Set<User>().FirstOrDefaultAsync(entityCondition);
@@ -88,9 +87,9 @@ namespace backend.DAL
             }, RepositoryMessages.FailedUpdateItemMessage);
         }
 
-        public async Task<Result<bool>> DeleteAsync(Expression<Func<UserDto, bool>> condition)
+        public async Task<Result<bool>> DeleteAsync(Expression<Func<UserRequest, bool>> condition)
         {
-            return await PerformOperationAsync<bool>(async () =>
+            return await PerformOperationAsync(async () =>
             {
                 var entityCondition = _mapper.Map<Expression<Func<User, bool>>>(condition);
                 var itemsToRemove = await _context.Set<User>().Where(entityCondition).ToListAsync();

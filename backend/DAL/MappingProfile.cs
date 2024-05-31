@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using backend.Dtos.Request;
 
 namespace backend.DAL
 {
@@ -6,7 +7,7 @@ namespace backend.DAL
     {
         public MappingProfile()
         {
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserRequest>().ReverseMap();
         }
     }
 }

@@ -1,6 +1,9 @@
 using AutoMapper.Extensions.ExpressionMapping;
 using backend.DAL;
-using backend.Services;
+using backend.Repositories.Implementations;
+using backend.Repositories.Interfaces;
+using backend.Services.Implementations;
+using backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend

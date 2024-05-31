@@ -1,5 +1,4 @@
 ﻿using backend.DAL;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend
@@ -15,7 +14,6 @@ namespace backend
 
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddDbContext<AppDBContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("HospitalDb")));
 

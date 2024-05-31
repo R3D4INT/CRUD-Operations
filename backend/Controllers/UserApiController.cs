@@ -1,34 +1,30 @@
-﻿using System.Collections;
-using Microsoft.AspNetCore.Http;
-using System.Net;
-using System.Web.Http;
-using AutoMapper;
+﻿using AutoMapper;
+using backend.Dtos.Request;
+using backend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using backend.DAL;
-using backend.Services;
 
 namespace backend.Controllers
 {
-    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserApiController : ControllerBase
     {
         private readonly IUserService _userService;
-
         private readonly IMapper _mapper;
+
         public UserApiController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
             _mapper = mapper;
         }
 
-        [Microsoft.AspNetCore.Mvc.HttpGet]
-        [Microsoft.AspNetCore.Mvc.Route("GetAllUsers")]
+        [HttpGet]
+        [Route("GetAllUsers")]
         public async Task<ObjectResult> GetAllUsers()
         {
             try
             {
-                var resultDto = await _userService.GetListByCondition(e => e.Id != null);
+                var resultDto = await _userService.GetListByConditionAsync(e => e.Id != null);
                 var result = _mapper.Map<IEnumerable<User>>(resultDto);
                 return Ok(result);
             }
@@ -38,13 +34,13 @@ namespace backend.Controllers
             }
         }
 
-        [Microsoft.AspNetCore.Mvc.HttpGet]
-        [Microsoft.AspNetCore.Mvc.Route("GetUser/{id:int}")]
+        [HttpGet]
+        [Route("GetUser/{id:int}")]
         public async Task<ObjectResult> GetUser(int id)
         {
             try
             {
-                var resultDto = await _userService.GetSingleByCondition(e => e.Id == id);
+                var resultDto = await _userService.GetSingleByConditionAsync(e => e.Id == id);
                 var result = _mapper.Map<User>(resultDto);
 
                 return Ok(result);
@@ -57,13 +53,13 @@ namespace backend.Controllers
 
         }
 
-        [Microsoft.AspNetCore.Mvc.HttpPost]
-        [Microsoft.AspNetCore.Mvc.Route("CreateUser")]
+        [HttpPost]
+        [Route("CreateUser")]
         public async Task<ObjectResult> CreateUser(User user)
         {
             try
             {
-                var userDto = _mapper.Map<UserDto>(user);
+                var userDto = _mapper.Map<UserRequest>(user);
                 await _userService.Add(userDto);
                 return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
             }
@@ -73,14 +69,14 @@ namespace backend.Controllers
             }
         }
 
-        [Microsoft.AspNetCore.Mvc.HttpPut]
-        [Microsoft.AspNetCore.Mvc.Route("UpdateUser/{id:int}")]
+        [HttpPut]
+        [Route("UpdateUser/{id:int}")]
         public async Task<ObjectResult> Put(int id, User user)
         {
             try
             {
-                var userDto = _mapper.Map<UserDto>(user);
-                await _userService.Update(userDto, e => e.Id == id);
+                var userDto = _mapper.Map<UserRequest>(user);
+                await _userService.UpdateAsync(userDto, e => e.Id == id);
                 
                 return Ok(user);
             }
@@ -90,8 +86,8 @@ namespace backend.Controllers
             }
         }
 
-        [Microsoft.AspNetCore.Mvc.HttpDelete]
-        [Microsoft.AspNetCore.Mvc.Route("DeleteUser/{id:int}")]
+        [HttpDelete]
+        [Route("DeleteUser/{id:int}")]
         public async Task<ObjectResult> Delete(int id)
         {
             try

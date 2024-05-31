@@ -1,7 +1,7 @@
-﻿using backend.DAL;
-using backend.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using backend.Repositories.Implementations;
+using backend.Repositories.Interfaces;
+using backend.Services.Implementations;
+using backend.Services.Interfaces;
 
 namespace backend
 {

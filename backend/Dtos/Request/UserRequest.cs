@@ -1,9 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using backend.Models.enums;
+﻿using backend.Models.enums;
 
-namespace backend.DAL
+namespace backend.Dtos.Request
 {
-    public class UserDto
+    public class UserRequest
     {
         public int Id { get; set; }
         public string Name { get; set; }
