@@ -4,6 +4,7 @@ using backend.Repositories.Implementations;
 using backend.Repositories.Interfaces;
 using backend.Services.Implementations;
 using backend.Services.Interfaces;
+using backend.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend
@@ -20,6 +21,8 @@ namespace backend
             builder.Services.AddScoped<IUserService, UserService>();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork.Implementations.UnitOfWork>();
 
             builder.Services.AddAutoMapper(cfg => {
                 cfg.AddExpressionMapping();

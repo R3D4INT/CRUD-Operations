@@ -5,6 +5,7 @@ using backend.Dtos.Request;
 using backend.Helpers;
 using backend.Models;
 using backend.Repositories.Interfaces;
+using backend.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories.Implementations
@@ -63,7 +64,6 @@ namespace backend.Repositories.Implementations
             {
                 var user = _mapper.Map<User>(item);
                 _context.Set<User>().Add(user);
-                await _context.SaveChangesAsync();
                 return item;
             }, RepositoryMessages.FailedAddItemMessage);
         }
@@ -81,7 +81,6 @@ namespace backend.Repositories.Implementations
                 }
 
                 _context.Entry(itemToUpdate).CurrentValues.SetValues(item);
-                await _context.SaveChangesAsync();
 
                 return true;
             }, RepositoryMessages.FailedUpdateItemMessage);
@@ -100,7 +99,6 @@ namespace backend.Repositories.Implementations
                 }
 
                 _context.Set<User>().RemoveRange(itemsToRemove);
-                await _context.SaveChangesAsync();
 
                 return true;
             }, RepositoryMessages.FailedDeleteItemMessage);

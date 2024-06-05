@@ -5,28 +5,30 @@ using backend.Helpers;
 using backend.Models;
 using backend.Repositories.Interfaces;
 using backend.Services.Interfaces;
+using backend.UnitOfWork.Interfaces;
 
 namespace backend.Services.Implementations
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _repository;
         private readonly IMapper _mapper;
-
-        public UserService(IUserRepository repository, IMapper mapper)
+        private readonly IUnitOfWork _unitOfWork;
+        public UserService(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _repository = repository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         private async Task<T> ExecuteRepositoryMethod<T>(Func<IUserRepository, Task<Result<T>>> method, string errorMessage)
         {
-            var result = await method(_repository);
+            var result = await method(_unitOfWork.userRepository);
 
             if (!result.IsSuccess)
             {
                 throw new Exception(errorMessage);
             }
+
+            await _unitOfWork.SaveChangesAsync();
 
             return _mapper.Map<T>(result.Data);
         }
