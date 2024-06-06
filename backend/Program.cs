@@ -1,4 +1,5 @@
 using AutoMapper.Extensions.ExpressionMapping;
+using backend.BackGroundJob;
 using backend.DAL;
 using backend.Repositories.Implementations;
 using backend.Repositories.Interfaces;
@@ -6,6 +7,7 @@ using backend.Services.Implementations;
 using backend.Services.Interfaces;
 using backend.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 
 namespace backend
 {
@@ -29,6 +31,24 @@ namespace backend
                 cfg.AddProfile<MappingProfile>(); 
             }, typeof(Startup));
 
+            builder.Services.AddQuartz(options =>
+            {
+                options.UseMicrosoftDependencyInjectionJobFactory();
+
+                var jobKey = JobKey.Create(nameof(ClearOldUsersInDatabaseJob));
+
+                options
+                    .AddJob<ClearOldUsersInDatabaseJob>(jobKey)
+                    .AddTrigger(trigger => trigger.ForJob(jobKey)
+                        .WithSimpleSchedule(schedule => schedule
+                            .WithIntervalInMinutes(5).RepeatForever()));
+            });
+
+            builder.Services.AddQuartzHostedService(options =>
+            {
+                options.WaitForJobsToComplete = true;
+            });
+
             builder.Services.AddDbContext<AppDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("HospitalDb")));
 
@@ -41,12 +61,14 @@ namespace backend
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             static IHostBuilder CreateHostBuilder(string[] args) =>
                 Host.CreateDefaultBuilder(args)
                     .ConfigureWebHostDefaults(webBuilder =>
                     {
                         webBuilder.UseStartup<Startup>();
                     });
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

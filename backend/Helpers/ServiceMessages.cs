@@ -8,5 +8,6 @@
         public const string FailedGetSingle= "Failed to get by predicate";
         public const string FailedToUpdate = "Failed to update";
         public const string WithId = "with Id";
+        public const string FailedToDeleteUsersOlderThanThirty = "Failed to delete users older than 30";
     }
 }

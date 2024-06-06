@@ -30,32 +30,37 @@ namespace backend.Services.Implementations
 
             await _unitOfWork.SaveChangesAsync();
 
-            return _mapper.Map<T>(result.Data);
+            return result.Data;
         }
 
-        public virtual async Task Add(UserRequest user)
+        public virtual async Task AddAsync(UserRequest user)
         {
-            await ExecuteRepositoryMethod(repo => repo.AddAsync(user), $"{ServiceMessages.FailedToAdd} {typeof(User).Name}");
+            await ExecuteRepositoryMethod(repo => repo.AddAsync(user), $"{ServiceMessages.FailedToAdd} {nameof(User)}");
         }
 
-        public virtual async Task Delete(Expression<Func<UserRequest, bool>> predicate)
+        public virtual async Task DeleteAsync(Expression<Func<UserRequest, bool>> predicate)
         {
-            await ExecuteRepositoryMethod(repo => repo.DeleteAsync(predicate), $"{ServiceMessages.FailedToDelete} {typeof(User).Name}.");
+            await ExecuteRepositoryMethod(repo => repo.DeleteAsync(predicate), $"{ServiceMessages.FailedToDelete} {nameof(User)}.");
         }
 
         public virtual async Task<IEnumerable<UserRequest>> GetListByConditionAsync(Expression<Func<UserRequest, bool>> predicate)
         {
-            return await ExecuteRepositoryMethod(repo => repo.GetListByConditionAsync(predicate), $"{ServiceMessages.FailedGetList} {typeof(User).Name}s.");
+            return await ExecuteRepositoryMethod(repo => repo.GetListByConditionAsync(predicate), $"{ServiceMessages.FailedGetList} {nameof(User)}s.");
         }
 
         public async Task<UserRequest> GetSingleByConditionAsync(Expression<Func<UserRequest, bool>> predicate)
         {
-            return await ExecuteRepositoryMethod(repo => repo.GetSingleByConditionAsync(predicate), $"{ServiceMessages.FailedGetSingle} {typeof(User).Name}.");
+            return await ExecuteRepositoryMethod(repo => repo.GetSingleByConditionAsync(predicate), $"{ServiceMessages.FailedGetSingle} {nameof(User)}.");
         }
 
         public virtual async Task UpdateAsync(UserRequest user, Expression<Func<UserRequest, bool>> condition)
         {
-            await ExecuteRepositoryMethod(repo => repo.UpdateAsync(user, condition), $"{ServiceMessages.FailedToUpdate} {typeof(User).Name} {ServiceMessages.WithId} {user.Id}.");
+            await ExecuteRepositoryMethod(repo => repo.UpdateAsync(user, condition), $"{ServiceMessages.FailedToUpdate} {nameof(User)} {ServiceMessages.WithId} {user.Id}.");
+        }
+
+        public virtual async Task DeleteUsersOlderThanThirty()
+        {
+            await ExecuteRepositoryMethod(repo => repo.DeleteUsersOlderThan30Async(), $"{ServiceMessages.FailedToDeleteUsersOlderThanThirty} {nameof(User)}");
         }
     }
 }

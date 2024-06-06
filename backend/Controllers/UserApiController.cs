@@ -60,7 +60,7 @@ namespace backend.Controllers
             try
             {
                 var userDto = _mapper.Map<UserRequest>(user);
-                await _userService.Add(userDto);
+                await _userService.AddAsync(userDto);
                 return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
             }
             catch (Exception e)
@@ -92,7 +92,7 @@ namespace backend.Controllers
         {
             try
             {
-                await _userService.Delete(e => e.Id == id);
+                await _userService.DeleteAsync(e => e.Id == id);
                 return Ok(id);
             }
             catch (Exception e)

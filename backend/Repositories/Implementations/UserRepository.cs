@@ -5,7 +5,6 @@ using backend.Dtos.Request;
 using backend.Helpers;
 using backend.Models;
 using backend.Repositories.Interfaces;
-using backend.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories.Implementations
@@ -102,6 +101,22 @@ namespace backend.Repositories.Implementations
 
                 return true;
             }, RepositoryMessages.FailedDeleteItemMessage);
+        }
+        public async Task<Result<bool>> DeleteUsersOlderThan30Async()
+        {
+            return await PerformOperationAsync(async () =>
+            {
+                var usersToRemove = await _context.Set<User>().Where(u => u.Age > 30).ToListAsync();
+
+                if (!usersToRemove.Any())
+                {
+                    throw new EntityNotFoundException(RepositoryMessages.NoUsersOlderThanThirty);
+                }
+
+                _context.Set<User>().RemoveRange(usersToRemove);
+
+                return true;
+            }, RepositoryMessages.NoUsersOlderThanThirty);
         }
     }
 }

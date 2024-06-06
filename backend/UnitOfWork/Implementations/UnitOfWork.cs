@@ -8,6 +8,7 @@ namespace backend.UnitOfWork.Implementations
     {
         private readonly AppDBContext _dbContext;
         public IUserRepository userRepository { get; private set; }
+
         private bool disposed = false;
 
         public UnitOfWork(AppDBContext dbContext, IUserRepository userRepository)
