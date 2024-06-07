@@ -8,7 +8,6 @@ namespace backend.UnitOfWork.Implementations
     {
         private readonly AppDBContext _dbContext;
         public IUserRepository userRepository { get; private set; }
-
         private bool disposed = false;
 
         public UnitOfWork(AppDBContext dbContext, IUserRepository userRepository)
@@ -25,14 +24,15 @@ namespace backend.UnitOfWork.Implementations
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!disposed)
             {
                 if (disposing)
                 {
                     _dbContext.Dispose();
                 }
             }
-            this.disposed = true;
+
+            disposed = true;
         }
 
         public void Dispose()

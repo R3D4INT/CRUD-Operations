@@ -27,11 +27,19 @@ namespace backend.Repositories.Implementations
                 var result = await operation();
                 return Result<T>.Success(result);
             }
+            catch (ArgumentNullException ex)
+            {
+                return Result<T>.Fail(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return Result<T>.Fail(ex.Message);
+            }
             catch (EntityNotFoundException ex)
             {
                 return Result<T>.Fail(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Result<T>.Fail(errorMessage);
             }
@@ -102,6 +110,7 @@ namespace backend.Repositories.Implementations
                 return true;
             }, RepositoryMessages.FailedDeleteItemMessage);
         }
+
         public async Task<Result<bool>> DeleteUsersOlderThan30Async()
         {
             return await PerformOperationAsync(async () =>

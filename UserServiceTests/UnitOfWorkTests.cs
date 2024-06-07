@@ -1,6 +1,7 @@
 ﻿using backend.DAL;
 using backend.Repositories.Interfaces;
 using backend.UnitOfWork.Implementations;
+using FluentAssertions;
 using Moq;
 
 namespace UserServiceTests
@@ -28,13 +29,13 @@ namespace UserServiceTests
         public async Task SaveChangesAsync_CallsDbContextSaveChangesAsync()
         {
             _mockDbContext
-                .Setup(db => db.SaveChangesAsync(It.IsAny<System.Threading.CancellationToken>()))
+                .Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(1));
 
             await _unitOfWork.SaveChangesAsync();
 
             _mockDbContext
-                .Verify(db => db.SaveChangesAsync(It.IsAny<System.Threading.CancellationToken>()), Times.Once);
+                .Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -63,6 +64,15 @@ namespace UserServiceTests
             var disposedValue = (bool)disposedField.GetValue(_unitOfWork);
 
             Assert.True(disposedValue);
+        }
+
+        [Fact]
+        public void SaveChangesAsync_CanBeCalledAfterDispose()
+        {
+            _unitOfWork.Dispose();
+
+            var saveChangesAsync = async () => await _unitOfWork.SaveChangesAsync();
+            saveChangesAsync.Should().NotThrowAsync();
         }
     }
 }
