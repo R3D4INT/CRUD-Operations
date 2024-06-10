@@ -102,7 +102,7 @@ namespace UserServiceTests
         }
 
         [Fact]
-        public async Task AddAsync_ShouldThrowExceptionOnRepositoryError()
+        public async Task AddAsync_ShouldThrowException_WhenRepositoryReturnsFailureResult()
         {
             var userRequest = new UserRequest
             {
@@ -124,7 +124,7 @@ namespace UserServiceTests
         }
 
         [Fact]
-        public async Task AddAsync_ShouldThrowException_OnRepositoryException()
+        public async Task AddAsync_ShouldThrowException_WhenRepositoryThrowsException()
         {
             var userRequest = new UserRequest
             {
@@ -280,8 +280,6 @@ namespace UserServiceTests
                 Age = 19,
                 Email = "test@gmail.com"
             };
-
-            var users = new List<User> { user };
 
             _mapperMock.Setup(m => m.Map<Expression<Func<User, bool>>>(userRequestCondition))
                 .Returns(e => e.Id == 1);
