@@ -1,3 +1,4 @@
+using System.Globalization;
 using AutoMapper.Extensions.ExpressionMapping;
 using backend.BackGroundJob;
 using backend.DAL;
@@ -6,6 +7,8 @@ using backend.Repositories.Interfaces;
 using backend.Services.Implementations;
 using backend.Services.Interfaces;
 using backend.UnitOfWork.Interfaces;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -18,7 +21,26 @@ namespace backend
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+
+            builder.Services.AddLocalization(options =>
+            {
+                options.ResourcesPath = "Resources";
+            });
+
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    new CultureInfo("EN"),
+                    new CultureInfo("IT")
+                };
+
+                options.DefaultRequestCulture = new RequestCulture("EN");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
 
             builder.Services.AddScoped<IUserService, UserService>();
 
@@ -53,6 +75,8 @@ namespace backend
                 options.UseSqlServer(builder.Configuration.GetConnectionString("HospitalDb")));
 
             var app = builder.Build();
+
+            app.UseRequestLocalization();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

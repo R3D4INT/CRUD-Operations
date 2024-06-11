@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using backend.Models;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -18,7 +19,11 @@ namespace backend.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Contact()
+        {
+            return View();
+        }
+        public IActionResult About()
         {
             return View();
         }
@@ -27,6 +32,17 @@ namespace backend.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult ChangeCulture(string culture)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+
+            return Json(new { success = true });
         }
     }
 }

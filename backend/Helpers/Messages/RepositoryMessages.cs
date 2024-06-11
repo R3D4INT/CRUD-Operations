@@ -1,4 +1,4 @@
-﻿namespace backend.Helpers
+﻿namespace backend.Helpers.Messages
 {
     public static class RepositoryMessages
     {

@@ -1,8 +1,43 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using backend.Helpers.Messages
+@inject IViewLocalizer Localizer
+
+@{
+    ViewBag.Title = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Localizer[IndexViewStringsForResources.Index_Title] - My ASP.NET Application</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<main>
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">ASP.NET</h1>
+        <p class="lead">@Localizer[IndexViewStringsForResources.Index_Welcome]</p>
+        <p><a href="https://asp.net" class="btn btn-primary btn-md">@Localizer[IndexViewStringsForResources.Index_LearnMore] &raquo;</a></p>
+    </section>
+    <div class="row">
+        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
+            <h2 id="gettingStartedTitle">@Localizer[IndexViewStringsForResources.Index_FirstSectionTitle]</h2>
+            <p>
+                @Localizer[IndexViewStringsForResources.Index_FirstSectionMessage]
+            </p>
+            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">@Localizer[IndexViewStringsForResources.Index_LearnMore] &raquo;</a></p>
+        </section>
+        <section class="col-md-4" aria-labelledby="librariesTitle">
+            <h2 id="librariesTitle">@Localizer[IndexViewStringsForResources.Index_SecondSectionTitle]</h2>
+            <p>@Localizer[IndexViewStringsForResources.Index_SecondSectionMessage]</p>
+            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">@Localizer[IndexViewStringsForResources.Index_LearnMore] &raquo;</a></p>
+        </section>
+        <section class="col-md-4" aria-labelledby="hostingTitle">
+            <h2 id="hostingTitle">@Localizer[IndexViewStringsForResources.Index_ThirdSectionTitle]</h2>
+            <p>@Localizer[IndexViewStringsForResources.Index_ThirdSectionMessage]</p>
+            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">@Localizer[IndexViewStringsForResources.Index_LearnMore] &raquo;</a></p>
+        </section>
+    </div>
+</main>
+</html>

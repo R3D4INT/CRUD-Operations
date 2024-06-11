@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using backend.Helpers.Messages
+@inject IViewLocalizer Localizer
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -9,41 +12,75 @@
     <link rel="stylesheet" href="~/backend.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">backend</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+   <header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">backend</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer[LayoutViewStringsForResources.Home]</a>
+                    </li>
+                    <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Contact">@Localizer[LayoutViewStringsForResources.Contact]</a>
+                    </li>
+                    <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">@Localizer[LayoutViewStringsForResources.About]</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <button class="btn btn-default" onclick="changeCulture('en')">English</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-default" onclick="changeCulture('it')">Italian</button>
+                    </li>
+                </ul>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - backend - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - backend - <a asp-area="" asp-controller="Home" asp-action="Contact">@Localizer[LayoutViewStringsForResources.Contact]</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        function changeCulture(culture) {
+            fetch('@Url.Action("ChangeCulture", "Home")?culture=' + culture, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload(); 
+                    } else {
+                        console.error('Failed to change culture.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

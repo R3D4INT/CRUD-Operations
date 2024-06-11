@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Dtos\Response\" />
+    <Folder Include="Resources\Views\Home\Contact\" />
   </ItemGroup>
 
 </Project>
