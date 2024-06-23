@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.DAL
 {
     public class AppDBContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-
+        public DbSet<Country> Countries { get; set; }
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {
             Database.EnsureCreated();
@@ -20,6 +21,7 @@ namespace backend.DAL
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<User>().HasKey(u => u.Id);
+            modelBuilder.Entity<Country>().HasKey(u => u.Id);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

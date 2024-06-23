@@ -1,4 +1,5 @@
-﻿using backend.Models.enums;
+﻿using backend.Models;
+using backend.Models.enums;
 
 namespace backend.Dtos.Request
 {
@@ -11,5 +12,6 @@ namespace backend.Dtos.Request
         public string Email { get; set; }
         public string Address { get; set; }
         public Gender Gender { get; set; }
+        public Country Country { get; set; }
     }
 }

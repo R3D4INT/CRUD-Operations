@@ -51,7 +51,8 @@ namespace backend.Repositories.Implementations
             return await PerformOperationAsync(async () =>
             {
                 var entityCondition = _mapper.Map<Expression<Func<User, bool>>>(condition);
-                var items = await _context.Set<User>().Where(entityCondition).ToListAsync();
+                var items = await _context.Set<User>().Include(u => u.Country).Where(entityCondition).ToListAsync();
+                
                 return _mapper.Map<IEnumerable<UserRequest>>(items);
             }, RepositoryMessages.FailedGetListOfEntityMessage);
         }
@@ -61,7 +62,8 @@ namespace backend.Repositories.Implementations
             return await PerformOperationAsync(async () =>
             {
                 var entityCondition = _mapper.Map<Expression<Func<User, bool>>>(condition);
-                var item = await _context.Set<User>().FirstOrDefaultAsync(entityCondition);
+                var item = await _context.Set<User>().Include(u => u.Country).FirstOrDefaultAsync(entityCondition);
+
                 return _mapper.Map<UserRequest>(item);
             }, RepositoryMessages.FailedGetSingleItemMessage);
         }
@@ -71,7 +73,10 @@ namespace backend.Repositories.Implementations
             return await PerformOperationAsync(async () =>
             {
                 var user = _mapper.Map<User>(item);
+                var country = await _context.Countries.FirstOrDefaultAsync(c => c.Name == item.Country.Name);
+                user.Country = country;
                 _context.Set<User>().Add(user);
+
                 return item;
             }, RepositoryMessages.FailedAddItemMessage);
         }
@@ -81,7 +86,7 @@ namespace backend.Repositories.Implementations
             return await PerformOperationAsync(async () =>
             {
                 var entityCondition = _mapper.Map<Expression<Func<User, bool>>>(condition);
-                var itemToUpdate = await _context.Set<User>().FirstOrDefaultAsync(entityCondition);
+                var itemToUpdate = await _context.Set<User>().Include(u => u.Country).FirstOrDefaultAsync(entityCondition);
 
                 if (itemToUpdate == null)
                 {
@@ -89,6 +94,16 @@ namespace backend.Repositories.Implementations
                 }
 
                 _context.Entry(itemToUpdate).CurrentValues.SetValues(item);
+                var country = await _context.Countries.FirstAsync(e => e.Name == item.Country.Name);
+                if (country != null)
+                {
+                    itemToUpdate.Country = country;
+                }
+                else
+                {
+                    itemToUpdate.Country = item.Country; 
+                    _context.Entry(itemToUpdate.Country).State = EntityState.Added;
+                }
 
                 return true;
             }, RepositoryMessages.FailedUpdateItemMessage);

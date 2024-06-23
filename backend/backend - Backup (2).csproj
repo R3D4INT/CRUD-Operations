@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Dtos\Response\" />
+    <Folder Include="Files\" />
   </ItemGroup>
 
 </Project>

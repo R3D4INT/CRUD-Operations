@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.DAL;
 
@@ -10,9 +11,11 @@ using backend.DAL;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240620121943_AddCountryToUserClass")]
+    partial class AddCountryToUserClass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +62,7 @@ namespace backend.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
-                    b.Property<int>("CountryId")
+                    b.Property<int>("CountryID")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -79,7 +82,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryId");
+                    b.HasIndex("CountryID");
 
                     b.ToTable("Users");
                 });
@@ -88,7 +91,7 @@ namespace backend.Migrations
                 {
                     b.HasOne("backend.Models.Country", "Country")
                         .WithMany()
-                        .HasForeignKey("CountryId")
+                        .HasForeignKey("CountryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

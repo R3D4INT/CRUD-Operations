@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using AutoMapper;
 using backend.Models;
+using backend.Services.Interfaces;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +10,6 @@ namespace backend.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -23,7 +24,8 @@ namespace backend.Controllers
         {
             return View();
         }
-        public IActionResult About()
+
+        public async Task<IActionResult> About()
         {
             return View();
         }

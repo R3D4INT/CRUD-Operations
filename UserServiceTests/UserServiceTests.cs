@@ -1,15 +1,13 @@
 using AutoMapper;
 using backend;
 using backend.Dtos.Request;
-using backend.Helpers;
+using backend.Helpers.Messages;
 using backend.Models;
 using backend.Models.enums;
 using backend.Repositories.Interfaces;
 using backend.Services.Implementations;
 using backend.UnitOfWork.Interfaces;
 using Moq;
-using System;
-using System.Data.Common;
 using System.Linq.Expressions;
 
 namespace UserServiceTests
@@ -26,7 +24,7 @@ namespace UserServiceTests
             _mapperMock = new Mock<IMapper>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _userRepositoryMock = new Mock<IUserRepository>();
-            _userService = new UserService(_mapperMock.Object, _unitOfWorkMock.Object);
+            _userService = new UserService(_unitOfWorkMock.Object);
         }
 
         #region AddAsyncTests
@@ -369,7 +367,7 @@ namespace UserServiceTests
 
             _unitOfWorkMock.Setup(u => u.userRepository).Returns(_userRepositoryMock.Object);
 
-            var _userService = new UserService(_mapperMock.Object, _unitOfWorkMock.Object);
+            var _userService = new UserService(_unitOfWorkMock.Object);
 
             var result = await _userService.GetListByConditionAsync(predicate);
 
@@ -399,7 +397,7 @@ namespace UserServiceTests
 
             _unitOfWorkMock.Setup(u => u.userRepository).Returns(_userRepositoryMock.Object);
 
-            var _userService = new UserService(_mapperMock.Object, _unitOfWorkMock.Object);
+            var _userService = new UserService(_unitOfWorkMock.Object);
 
             var result = await _userService.GetListByConditionAsync(predicate);
 
@@ -451,7 +449,7 @@ namespace UserServiceTests
 
             _unitOfWorkMock.Setup(u => u.userRepository).Returns(_userRepositoryMock.Object);
 
-            var _userService = new UserService(_mapperMock.Object, _unitOfWorkMock.Object);
+            var _userService = new UserService(_unitOfWorkMock.Object);
 
             var result = await _userService.GetSingleByConditionAsync(predicate);
 

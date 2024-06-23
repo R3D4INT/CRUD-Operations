@@ -8,12 +8,14 @@ namespace backend.UnitOfWork.Implementations
     {
         private readonly AppDBContext _dbContext;
         public IUserRepository userRepository { get; private set; }
+        public ICountryRepository countryRepository { get; private set; }
         private bool disposed = false;
 
-        public UnitOfWork(AppDBContext dbContext, IUserRepository userRepository)
+        public UnitOfWork(AppDBContext dbContext, IUserRepository userRepository, ICountryRepository countryRepository)
         {
             _dbContext = dbContext;
             this.userRepository = userRepository;
+            this.countryRepository = countryRepository;
         }
 
         public Task SaveChangesAsync()
