@@ -11,11 +11,10 @@ namespace backend.Services.Implementations
 {
     public class UserService : IUserService
     {
-        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        public UserService(IMapper mapper, IUnitOfWork unitOfWork)
+
+        public UserService(IUnitOfWork unitOfWork)
         {
-            _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
 

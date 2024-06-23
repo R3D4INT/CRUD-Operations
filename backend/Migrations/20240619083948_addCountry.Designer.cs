@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.DAL;
 
@@ -10,9 +11,11 @@ using backend.DAL;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240619083948_addCountry")]
+    partial class addCountry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,8 +39,9 @@ namespace backend.Migrations
                     b.Property<int>("Population")
                         .HasColumnType("int");
 
-                    b.Property<int>("Region")
-                        .HasColumnType("int");
+                    b.Property<string>("Region")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -59,9 +63,6 @@ namespace backend.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
-                    b.Property<int>("CountryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -79,20 +80,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryId");
-
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("backend.User", b =>
-                {
-                    b.HasOne("backend.Models.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
                 });
 #pragma warning restore 612, 618
         }

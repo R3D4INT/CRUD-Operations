@@ -48,22 +48,32 @@ namespace backend
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork.Implementations.UnitOfWork>();
 
+            builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+
+            builder.Services.AddScoped<ICountryService, CountryService>();
+
             builder.Services.AddAutoMapper(cfg => {
                 cfg.AddExpressionMapping();
                 cfg.AddProfile<MappingProfile>(); 
-            }, typeof(Startup));
+            }, typeof(Program));
 
             builder.Services.AddQuartz(options =>
             {
                 options.UseMicrosoftDependencyInjectionJobFactory();
 
-                var jobKey = JobKey.Create(nameof(ClearOldUsersInDatabaseJob));
+                var jobKeyForClearOldUsers = JobKey.Create(nameof(ClearOldUsersInDatabaseJob));
+                var jobKeyForImportCountries = JobKey.Create(nameof(ImportCountriesFromExcelJob));
 
                 options
-                    .AddJob<ClearOldUsersInDatabaseJob>(jobKey)
-                    .AddTrigger(trigger => trigger.ForJob(jobKey)
+                    .AddJob<ClearOldUsersInDatabaseJob>(jobKeyForClearOldUsers)
+                    .AddTrigger(trigger => trigger.ForJob(jobKeyForClearOldUsers)
                         .WithSimpleSchedule(schedule => schedule
-                            .WithIntervalInMinutes(5).RepeatForever()));
+                            .WithIntervalInMinutes(5)));
+                options
+                    .AddJob<ImportCountriesFromExcelJob>(jobKeyForImportCountries)
+                    .AddTrigger(trigger => trigger.ForJob(jobKeyForImportCountries)
+                        .WithSimpleSchedule(schedule => schedule
+                            .WithRepeatCount(0)).StartAt(DateTimeOffset.Now));
             });
 
             builder.Services.AddQuartzHostedService(options =>
@@ -85,13 +95,6 @@ namespace backend
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            static IHostBuilder CreateHostBuilder(string[] args) =>
-                Host.CreateDefaultBuilder(args)
-                    .ConfigureWebHostDefaults(webBuilder =>
-                    {
-                        webBuilder.UseStartup<Startup>();
-                    });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

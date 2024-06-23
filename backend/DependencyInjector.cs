@@ -11,6 +11,7 @@ namespace backend
         {
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
             services.AddScoped(typeof(IUserService), typeof(UserService));
+            services.AddScoped(typeof(ICountryRepository), typeof(CountryRepository));
         }
     }
 }

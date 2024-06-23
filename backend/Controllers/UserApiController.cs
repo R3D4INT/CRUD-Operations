@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using backend.Dtos.Request;
+using backend.Models;
 using backend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,12 +11,14 @@ namespace backend.Controllers
     public class UserApiController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ICountryService _countryService;
         private readonly IMapper _mapper;
 
-        public UserApiController(IUserService userService, IMapper mapper)
+        public UserApiController(IUserService userService, IMapper mapper, ICountryService countryService)
         {
             _userService = userService;
             _mapper = mapper;
+            _countryService = countryService;
         }
 
         [HttpGet]
@@ -50,7 +53,6 @@ namespace backend.Controllers
             {
                 return NotFound(e.Message);
             }
-
         }
 
         [HttpPost]
@@ -77,7 +79,7 @@ namespace backend.Controllers
             {
                 var userDto = _mapper.Map<UserRequest>(user);
                 await _userService.UpdateAsync(userDto, e => e.Id == id);
-                
+
                 return Ok(user);
             }
             catch (Exception e)
@@ -98,6 +100,40 @@ namespace backend.Controllers
             catch (Exception e)
             {
                 return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetCountries")]
+        public async Task<ObjectResult> GetCountries()
+        {
+            try
+            {
+                var resultDto = await _countryService.GetCountriesAsync();
+                var result = _mapper.Map<IEnumerable<Country>>(resultDto);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetCountry/{name}")]
+        public async Task<ObjectResult> GetCountry(string name)
+        {
+            try
+            {
+                var resultDto = await _countryService.GetCountryByNameAsync(name);
+                var result = _mapper.Map<Country>(resultDto);
+
+                return Ok(result);
+
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
             }
         }
     }

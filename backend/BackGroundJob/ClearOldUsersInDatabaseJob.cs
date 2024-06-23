@@ -7,6 +7,7 @@ namespace backend.BackGroundJob
     public class ClearOldUsersInDatabaseJob : IJob
     {
         private readonly IUserService _userService;
+
         public ClearOldUsersInDatabaseJob(IUserService userService)
         {
             _userService = userService;
@@ -19,7 +20,7 @@ namespace backend.BackGroundJob
             }
             catch (Exception ex)
             {
-                throw new Exception($"{JobMessages.NoUsersOlderThanThirty} {ex.Message}");
+                throw new Exception($"{JobStrings.NoUsersOlderThanThirty} {ex.Message}");
             }
         }
     }   

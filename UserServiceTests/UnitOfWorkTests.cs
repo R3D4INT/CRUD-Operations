@@ -16,7 +16,7 @@ namespace UserServiceTests
         {
             _mockDbContext = new Mock<AppDBContext>();
             _mockUserRepository = new Mock<IUserRepository>();
-            _unitOfWork = new UnitOfWork(_mockDbContext.Object, _mockUserRepository.Object);
+            _unitOfWork = new UnitOfWork(_mockDbContext.Object, _mockUserRepository.Object, null);
         }
 
         [Fact]
