@@ -11,6 +11,10 @@ namespace backend.DAL
             Database.EnsureCreated();
         }
 
+        public AppDBContext()
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

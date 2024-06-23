@@ -3,6 +3,7 @@ using AutoMapper;
 using backend.DAL;
 using backend.Dtos.Request;
 using backend.Helpers;
+using backend.Helpers.Messages;
 using backend.Models;
 using backend.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -27,11 +28,19 @@ namespace backend.Repositories.Implementations
                 var result = await operation();
                 return Result<T>.Success(result);
             }
+            catch (ArgumentNullException ex)
+            {
+                return Result<T>.Fail(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return Result<T>.Fail(ex.Message);
+            }
             catch (EntityNotFoundException ex)
             {
                 return Result<T>.Fail(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Result<T>.Fail(errorMessage);
             }
@@ -63,7 +72,6 @@ namespace backend.Repositories.Implementations
             {
                 var user = _mapper.Map<User>(item);
                 _context.Set<User>().Add(user);
-                await _context.SaveChangesAsync();
                 return item;
             }, RepositoryMessages.FailedAddItemMessage);
         }
@@ -81,7 +89,6 @@ namespace backend.Repositories.Implementations
                 }
 
                 _context.Entry(itemToUpdate).CurrentValues.SetValues(item);
-                await _context.SaveChangesAsync();
 
                 return true;
             }, RepositoryMessages.FailedUpdateItemMessage);
@@ -100,10 +107,26 @@ namespace backend.Repositories.Implementations
                 }
 
                 _context.Set<User>().RemoveRange(itemsToRemove);
-                await _context.SaveChangesAsync();
 
                 return true;
             }, RepositoryMessages.FailedDeleteItemMessage);
+        }
+
+        public async Task<Result<bool>> DeleteUsersOlderThan30Async()
+        {
+            return await PerformOperationAsync(async () =>
+            {
+                var usersToRemove = await _context.Set<User>().Where(u => u.Age > 30).ToListAsync();
+
+                if (!usersToRemove.Any())
+                {
+                    throw new EntityNotFoundException(RepositoryMessages.NoUsersOlderThanThirty);
+                }
+
+                _context.Set<User>().RemoveRange(usersToRemove);
+
+                return true;
+            }, RepositoryMessages.NoUsersOlderThanThirty);
         }
     }
 }

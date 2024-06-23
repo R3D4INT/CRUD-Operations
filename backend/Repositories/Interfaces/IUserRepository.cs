@@ -11,5 +11,6 @@ namespace backend.Repositories.Interfaces
         Task<Result<UserRequest>> AddAsync(UserRequest item);
         Task<Result<bool>> UpdateAsync(UserRequest item, Expression<Func<UserRequest, bool>> condition);
         Task<Result<bool>> DeleteAsync(Expression<Func<UserRequest, bool>> condition);
+        Task<Result<bool>> DeleteUsersOlderThan30Async();
     }
 }
